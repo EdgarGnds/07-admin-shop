@@ -57,8 +57,6 @@ import { RouterLink } from 'vue-router';
 const queryClient = useQueryClient();
 const { page } = usePagination();
 
-console.log({ page });
-
 const { data: products = [] } = useQuery({
   queryKey: ['products', { page: page }],
   queryFn: () => getProductsAction(page.value),

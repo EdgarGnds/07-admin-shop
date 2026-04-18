@@ -1,6 +1,7 @@
 import { getProductById } from '@/modules/products/actions';
 import { useQuery } from '@tanstack/vue-query';
-import { defineComponent } from 'vue';
+import { defineComponent, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   props: {
@@ -11,10 +12,21 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { data: product } = useQuery({
+    const router = useRouter();
+    const {
+      data: product,
+      isError,
+      isLoading,
+    } = useQuery({
       queryKey: ['product', props.productId],
       queryFn: () => getProductById(props.productId),
       retry: false,
+    });
+
+    watchEffect(() => {
+      if (isError.value && !isLoading.value) {
+        router.replace('/admin/products');
+      }
     });
 
     return {
