@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/vue-query';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import CustomInput from '@/modules/common/components/CustomInput.vue';
+import CustomTextArea from '@/modules/common/components/CustomTextArea.vue';
 
 const validationSchema = yup.object({
   title: yup.string().required().min(3),
@@ -18,6 +19,7 @@ const validationSchema = yup.object({
 export default defineComponent({
   components: {
     CustomInput,
+    CustomTextArea,
   },
   props: {
     productId: {
@@ -38,7 +40,7 @@ export default defineComponent({
       retry: false,
     });
 
-    const { values, defineField, errors } = useForm({
+    const { values, defineField, errors, handleSubmit } = useForm({
       validationSchema,
     });
 
@@ -48,6 +50,10 @@ export default defineComponent({
     const [price, priceAttrs] = defineField('price');
     const [stock, stockAttrs] = defineField('stock');
     const [gender, genderAttrs] = defineField('gender');
+
+    const onSubmit = handleSubmit((value) => {
+      console.log({ value });
+    });
 
     watchEffect(() => {
       if (isError.value && !isLoading.value) {
@@ -77,6 +83,7 @@ export default defineComponent({
       allSizes: ['XS', 'X', 'M', 'L', 'XL', 'XXL'],
 
       // Actions
+      onSubmit,
     };
   },
 });
