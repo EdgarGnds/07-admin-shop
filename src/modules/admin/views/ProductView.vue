@@ -73,7 +73,7 @@
       <label for="stock" class="form-label">Imágenes</label>
       <!-- Row with scrollable horizontal -->
       <div class="flex p-2 overflow-x-auto space-x-8 w-full h-66.25 bg-gray-200 rounded">
-        <div v-for="image in images" :key="image.value" class="flex-shrink-0">
+        <div v-for="image in images" :key="image.value" class="shrink-0">
           <img :src="image.value" :alt="title" class="w-62.5 h-62.5 rounded" />
         </div>
       </div>
@@ -108,12 +108,12 @@
   </form>
 
   <div class="grid grid-cols-2 mt-2">
-    <div class="bg-blue-200 p-2">
-      {{ values }}
-    </div>
-    <div class="bg-red-200 p-2">
-      {{ errors }}
-    </div>
+    <pre class="bg-blue-200 p-2">
+      {{ JSON.stringify(values, null, 2) }}
+    </pre>
+    <pre class="bg-red-200 p-2">
+      {{ JSON.stringify(errors, null, 2) }}
+    </pre>
   </div>
 </template>
 

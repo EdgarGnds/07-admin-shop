@@ -1,4 +1,4 @@
-import { defineComponent, watchEffect } from 'vue';
+import { defineComponent, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { getProductById } from '@/modules/products/actions';
 import { useQuery } from '@tanstack/vue-query';
@@ -40,7 +40,7 @@ export default defineComponent({
       retry: false,
     });
 
-    const { values, defineField, errors, handleSubmit } = useForm({
+    const { values, defineField, errors, handleSubmit, resetForm } = useForm({
       validationSchema,
       initialValues: product.value,
     });
@@ -75,6 +75,21 @@ export default defineComponent({
         router.replace('/admin/products');
       }
     });
+
+    watch(
+      product,
+      () => {
+        if (!product) return;
+
+        resetForm({
+          values: product.value,
+        });
+      },
+      {
+        deep: true,
+        immediate: true,
+      },
+    );
 
     return {
       // Properties
