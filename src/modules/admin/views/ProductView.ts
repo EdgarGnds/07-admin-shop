@@ -118,6 +118,11 @@ export default defineComponent({
       // Actions
       onSubmit,
       toggleSize,
+
+      hasSize: (size: string) => {
+        const currentSizes = sizes.value.map((s) => s.value);
+        return currentSizes.includes(size);
+      },
     };
   },
 });
