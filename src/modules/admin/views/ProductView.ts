@@ -1,11 +1,12 @@
 import { defineComponent, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import { getProductById } from '@/modules/products/actions';
-import { useQuery } from '@tanstack/vue-query';
+import { createUpdateProductAction, getProductById } from '@/modules/products/actions';
+import { useMutation, useQuery } from '@tanstack/vue-query';
 import { useFieldArray, useForm } from 'vee-validate';
 import * as yup from 'yup';
 import CustomInput from '@/modules/common/components/CustomInput.vue';
 import CustomTextArea from '@/modules/common/components/CustomTextArea.vue';
+import { useToast } from 'vue-toastification';
 
 const validationSchema = yup.object({
   title: yup.string().required('Este campo es muy importante').min(3, 'Mínimo de 3 letras!!!'),
@@ -30,6 +31,8 @@ export default defineComponent({
 
   setup(props) {
     const router = useRouter();
+    const toast = useToast();
+
     const {
       data: product,
       isError,
@@ -38,6 +41,15 @@ export default defineComponent({
       queryKey: ['product', props.productId],
       queryFn: () => getProductById(props.productId),
       retry: false,
+    });
+
+    const {
+      mutate,
+      isPending,
+      isSuccess: isUpdateSuccess,
+      data: updatedProduct,
+    } = useMutation({
+      mutationFn: createUpdateProductAction,
     });
 
     const { values, defineField, errors, handleSubmit, resetForm, meta } = useForm({
@@ -55,8 +67,10 @@ export default defineComponent({
     const { fields: images } = useFieldArray<string>('images');
     const { fields: sizes, remove: removeSize, push: pushSize } = useFieldArray<string>('sizes');
 
-    const onSubmit = handleSubmit((value) => {
-      console.log({ value });
+    const onSubmit = handleSubmit((values) => {
+      // const product = await createUpdateProductAction(values);
+      // console.log({ values });
+      mutate(values);
     });
 
     const toggleSize = (size: string) => {
@@ -91,6 +105,16 @@ export default defineComponent({
       },
     );
 
+    watch(isUpdateSuccess, (value) => {
+      if (!value) return;
+
+      toast.success('Producto actualizado conrrectamente');
+
+      resetForm({
+        values: updatedProduct.value,
+      });
+    });
+
     return {
       // Properties
       values,
@@ -112,6 +136,8 @@ export default defineComponent({
 
       images,
       sizes,
+
+      isPending,
 
       // Getters
       allSizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],

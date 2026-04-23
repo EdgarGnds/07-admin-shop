@@ -1,7 +1,7 @@
 import { tesloApi } from '@/api/tesloApi';
 import type { Product } from '../interfaces/product.interface';
 
-export const createUpdateProduct = async (product: Partial<Product>) => {
+export const createUpdateProductAction = async (product: Partial<Product>) => {
   if (product.id && product.id !== '') {
     // Actualizar producto
     return await updateProduct(product);
@@ -15,7 +15,7 @@ const updateProduct = async (product: Partial<Product>) => {
     product.images?.map((image) => {
       if (image.startsWith('http')) {
         const imageName = image.split('/').pop() || '';
-        return imageName;
+        return imageName ? image : '';
       }
       return image;
     }) ?? [];
