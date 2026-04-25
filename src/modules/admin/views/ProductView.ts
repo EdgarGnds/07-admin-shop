@@ -73,7 +73,11 @@ export default defineComponent({
     const onSubmit = handleSubmit((values) => {
       // const product = await createUpdateProductAction(values);
       // console.log({ values });
-      mutate(values);
+      const formValues = {
+        ...values,
+        images: [...values.images, ...imageFiles.value],
+      };
+      mutate(formValues);
     });
 
     const toggleSize = (size: string) => {
@@ -129,6 +133,7 @@ export default defineComponent({
       resetForm({
         values: updatedProduct.value,
       });
+      imageFiles.value = [];
     });
 
     watch(
