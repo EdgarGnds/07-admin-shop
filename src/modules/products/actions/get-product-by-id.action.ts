@@ -1,3 +1,4 @@
+// oxlint-disable no-unused-vars
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { tesloApi } from '@/api/tesloApi';
 import type { Product } from '../interfaces/product.interface';
@@ -22,13 +23,12 @@ export const getProductById = async (productId: string): Promise<Product> => {
 
   try {
     const { data } = await tesloApi.get<Product>(`/products/${productId}`);
-    console.log({ data });
     return {
       ...data,
       images: data.images.map(getProductImageAction),
     };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new Error(`Error getting product by id ${productId}`);
   }
 };
